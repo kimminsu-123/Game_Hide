@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
 
-namespace Com.Hide.UI.Lobby.LobbyCanvas
+namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
 {
     public class EnterRoomInfoCanvas : MonoBehaviour
     {
         [SerializeField] private GameObject dimmedPanel;
         [SerializeField] private GameObject windowPanel;
+
+        [SerializeField] private EnterRoomInfoContents contents;
 
         private void Start()
         {
@@ -15,6 +17,8 @@ namespace Com.Hide.UI.Lobby.LobbyCanvas
 
         public void Show()
         {
+            contents.Initialize();
+
             dimmedPanel.SetActive(true);   
             windowPanel.SetActive(true);
         }

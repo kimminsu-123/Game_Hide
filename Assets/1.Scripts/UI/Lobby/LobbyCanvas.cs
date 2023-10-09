@@ -1,8 +1,6 @@
-using Com.Hide.Managers;
-using Com.Hide.UI.Lobby.LobbyCanvas;
 using UnityEngine;
 
-namespace Com.Hide.UI
+namespace Com.Hide.UI.Lobby.LobbyCanvas
 {
     public class LobbyCanvas : MonoBehaviour
     {

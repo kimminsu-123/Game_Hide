@@ -1,6 +1,4 @@
-using System;
-using Com.Hide.Managers;
-using Com.Hide.UI;
+using Com.Hide.UI.Lobby.EnterRoomInfoCanvas;
 using Com.Hide.UI.Lobby.LobbyCanvas;
 using Com.Hide.Utils;
 using UnityEngine;
