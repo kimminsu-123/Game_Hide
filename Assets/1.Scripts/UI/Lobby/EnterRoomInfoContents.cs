@@ -1,3 +1,4 @@
+using Com.Hide.Dialog;
 using Com.Hide.Managers;
 using Com.Hide.Utils;
 using TMPro;
@@ -33,7 +34,8 @@ namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
             var roomName = roomNameInputField.text.Trim();
             if (string.IsNullOrEmpty(roomName))
             {
-                Logger.LogError("room name is can not empty");
+                MessageDialog.Instance.Show("오류", "방 이름은 공백일 수 없습니다.");
+                Logger.LogError("Room Name Empty", "room name is can not empty");
                 return;
             }
             

@@ -6,21 +6,21 @@ namespace Com.Hide.Utils
     public static class Logger
     {
         [Conditional("UNITY_EDITOR")]
-        public static void Log(string msg)
+        public static void Log(string title, string msg)
         {
-            Debug.Log(msg);
+            Debug.Log($"[{title}] : {msg}");
         }
         
         [Conditional("UNITY_EDITOR")]
-        public static void LogError(string msg)
+        public static void LogError(string title, string msg)
         {
-            Debug.LogError(msg);
+            Debug.LogError($"[{title}] : {msg}");
         }
         
         [Conditional("UNITY_EDITOR")]
-        public static void LogWarning(string msg)
+        public static void LogWarning(string title, string msg)
         {
-            Debug.LogWarning(msg);
+            Debug.LogWarning($"[{title}] : {msg}");
         }
     }
 }

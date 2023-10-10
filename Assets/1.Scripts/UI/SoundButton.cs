@@ -27,6 +27,14 @@ namespace Com.Hide.UI
             _buttonText = GetComponentInChildren<TMP_Text>(true);
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (audioSource == null)
+                audioSource = FindObjectOfType<AudioSource>(true);
+        }
+
         public void ChangeText(string msg)
         {
             _buttonText.text = msg;

@@ -1,3 +1,4 @@
+using Com.Hide.Dialog;
 using Com.Hide.UI.Lobby.EnterRoomInfoCanvas;
 using Com.Hide.UI.Lobby.LobbyCanvas;
 using Com.Hide.Utils;
@@ -15,7 +16,7 @@ namespace Com.Hide.Managers
         {
             Initialize();
         }
-
+        
         private void Initialize()
         {
             lobbyCanvas.Initialize();

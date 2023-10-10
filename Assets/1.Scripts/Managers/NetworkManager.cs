@@ -1,7 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Com.Hide.Dialog;
 using Com.Hide.ScriptableObjects;
 using Com.Hide.Utils;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -12,7 +16,8 @@ namespace Com.Hide.Managers
     public class NetworkManager : SingletonMonoBehaviourPunCallbacks<NetworkManager>
     {
         private bool _isConnect = false;
-        
+        private RoomInfo[] _roomInfos = Array.Empty<RoomInfo>();
+
         private void Start()
         {
             Initialize();
@@ -29,13 +34,13 @@ namespace Com.Hide.Managers
 
             EventManager.Instance.AddListener(EventType.SceneLoaded, OnSceneLoaded);
         }
-        
+
         private void OnSceneLoaded(EventType type, Component sender, object[] args)
         {
             var sceneData = args[0] as SceneData;
             if (sceneData == null)
                 return;
-            
+
             switch (sceneData.Type)
             {
                 case SceneType.None:
@@ -56,32 +61,41 @@ namespace Com.Hide.Managers
         {
             while (!_isConnect)
                 yield return null;
-            
-            var success = PhotonNetwork.JoinLobby();
-            if(!success)
-                Logger.LogError("Failed Join Lobby");
+
+            if (!PhotonNetwork.JoinLobby())
+            {
+                MessageDialog.Instance.Show("오류", "로비에 접속 실패하였습니다.");
+                Logger.LogError("Join Lobby Error", "Failed Join Lobby");
+            }
         }
 
         public void CreateRoom(string roomName, int maxPlayer = 8, string password = "")
         {
             if (PhotonNetwork.InRoom)
                 return;
-            
+
             var opt = new RoomOptions
             {
                 MaxPlayers = maxPlayer,
-                CustomRoomProperties =
+                CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
                 {
-                    [RoomCustomPropertiesName.Password] = password
+                    { RoomCustomPropertiesName.Password, password }
                 }
             };
             
+            var r = _roomInfos?.FirstOrDefault(room => room.Name.Equals(roomName));
+            if (r != null)
+            {
+                MessageDialog.Instance.Show("오류", $"중복된 방제목입니다. [{roomName}]");
+                Logger.LogError("Duplicate Room Name", "this room already been created. use other room name");
+            }
+
             PhotonNetwork.CreateRoom(roomName, opt);
         }
 
         public override void OnJoinedLobby()
-        {                
-            Logger.Log("Success Join Lobby");
+        {
+            Logger.Log("Join Room", "Success Join Lobby");
 
             EventManager.Instance.PostNotification(EventType.OnJoinedLobby, this);
         }
@@ -94,10 +108,15 @@ namespace Com.Hide.Managers
         public override void OnCreatedRoom()
         {
             var currentRoom = PhotonNetwork.CurrentRoom;
-            
-            Logger.Log($"Created Room [Name: {currentRoom.Name}], [Password: {currentRoom.CustomProperties[RoomCustomPropertiesName.Password]}]");
-            
+
+            Logger.Log("Create Room", $"Created Room [Name: {currentRoom.Name}], [Password: {currentRoom.CustomProperties[RoomCustomPropertiesName.Password]}]");
+
             EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this, PhotonNetwork.CurrentRoom);
+        }
+
+        public override void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+            roomList?.CopyTo(_roomInfos);
         }
 
         private void OnDestroy()
