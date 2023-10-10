@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildIndex: 3
   sceneName: InGame
-  type: 2
+  type: 3
   mode: 1
+  isNetworkSynchronize: 1

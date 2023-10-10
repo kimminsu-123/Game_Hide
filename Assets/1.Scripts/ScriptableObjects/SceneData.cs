@@ -18,5 +18,8 @@ namespace Com.Hide.ScriptableObjects
 
         [SerializeField] private LoadSceneMode mode;
         public LoadSceneMode Mode => mode;
+
+        [SerializeField] private bool isNetworkSynchronize;
+        public bool IsNetworkSynchronize => isNetworkSynchronize;
     }
 }

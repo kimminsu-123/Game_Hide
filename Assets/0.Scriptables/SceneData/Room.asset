@@ -16,3 +16,4 @@ MonoBehaviour:
   sceneName: Room
   type: 2
   mode: 1
+  isNetworkSynchronize: 1

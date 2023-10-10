@@ -2,6 +2,7 @@ using System.Collections;
 using Com.Hide.Handler;
 using Com.Hide.ScriptableObjects;
 using Com.Hide.Utils;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,7 +19,6 @@ namespace Com.Hide.Managers
     public class LoadSceneManager : SingletonMonoBehaviour<LoadSceneManager>
     {
         [SerializeField] private LoadingUIHandler loadingUIHandler;
-        [SerializeField] private SceneData mainSceneData;
         
         private SceneData _currentLoadedScene;
         private Coroutine _loadSceneCoroutine;
@@ -40,13 +40,11 @@ namespace Com.Hide.Managers
         {
             loadingUIHandler.Show();
 
-            var operation = SceneManager.LoadSceneAsync(sceneData.BuildIndex, sceneData.Mode);
-            while (!operation.isDone)
-            {
-                loadingUIHandler.UpdateProgress(operation.progress);
-                
-                yield return null;
-            }
+            if(sceneData.IsNetworkSynchronize)
+                yield return LoadSceneNetworking(sceneData);
+            else
+                yield return LoadSceneNotNetworking(sceneData);
+            
             _currentLoadedScene = sceneData;
 
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneData.SceneName));
@@ -55,8 +53,39 @@ namespace Com.Hide.Managers
             EventManager.Instance.PostNotification(EventType.SceneLoaded, this, _currentLoadedScene);
         }
 
+        private IEnumerator LoadSceneNotNetworking(SceneData sceneData)
+        {
+            var operation = SceneManager.LoadSceneAsync(sceneData.BuildIndex, sceneData.Mode);
+            while (!operation.isDone)
+            {
+                loadingUIHandler.UpdateProgress(operation.progress);
+                
+                yield return null;
+            }
+            
+            loadingUIHandler.UpdateProgress(1f);
+        }
+        
+        private IEnumerator LoadSceneNetworking(SceneData sceneData)
+        {
+            if(NetworkManager.Instance.IsHost)
+                PhotonNetwork.LoadLevel(sceneData.BuildIndex);
+            
+            while (PhotonNetwork.LevelLoadingProgress < 1f)
+            {
+                loadingUIHandler.UpdateProgress(PhotonNetwork.LevelLoadingProgress);
+                
+                yield return null;
+            }
+            
+            loadingUIHandler.UpdateProgress(1f);
+        }
+
         private IEnumerator UnloadSceneCoroutine()
         {
+            if (_currentLoadedScene == null)
+                yield break;
+
             var unloadingSceneData = _currentLoadedScene;
             
             var operation = SceneManager.UnloadSceneAsync(_currentLoadedScene.BuildIndex);
@@ -65,7 +94,7 @@ namespace Com.Hide.Managers
                 yield return null;
             }
             _currentLoadedScene = null;
-
+            
             EventManager.Instance.PostNotification(EventType.SceneUnloaded, this, unloadingSceneData);
         }
     }

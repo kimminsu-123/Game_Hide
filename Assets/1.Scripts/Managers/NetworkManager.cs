@@ -5,7 +5,6 @@ using System.Linq;
 using Com.Hide.Dialog;
 using Com.Hide.ScriptableObjects;
 using Com.Hide.Utils;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -15,6 +14,8 @@ namespace Com.Hide.Managers
 {
     public class NetworkManager : SingletonMonoBehaviourPunCallbacks<NetworkManager>
     {
+        public bool IsHost => PhotonNetwork.IsMasterClient;
+        
         private bool _isConnect = false;
         private RoomInfo[] _roomInfos = Array.Empty<RoomInfo>();
 
@@ -114,8 +115,14 @@ namespace Com.Hide.Managers
             EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this, PhotonNetwork.CurrentRoom);
         }
 
+        public override void OnJoinedRoom()
+        {
+            Logger.Log("Joined Room", "Success Join Room");
+        }
+
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
+            _roomInfos = new RoomInfo[roomList.Count];
             roomList?.CopyTo(_roomInfos);
         }
 

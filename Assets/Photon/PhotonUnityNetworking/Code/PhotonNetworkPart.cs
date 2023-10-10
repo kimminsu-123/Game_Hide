@@ -9,6 +9,8 @@
 // ----------------------------------------------------------------------------
 
 
+using UnityEngine.SceneManagement;
+
 namespace Photon.Pun
 {
     using System;
