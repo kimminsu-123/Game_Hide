@@ -130,11 +130,11 @@ namespace Com.Hide.Managers
 
         public override void OnCreatedRoom()
         {
-            var currentRoom = PhotonNetwork.CurrentRoom;
+            var currentRoom = RoomManager.Instance.CurrentRoom;
 
             Logger.Log("Create Room", $"Created Room [Name: {currentRoom.Name}], [Password: {currentRoom.CustomProperties[RoomCustomPropertiesName.Password]}]");
 
-            EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this, PhotonNetwork.CurrentRoom);
+            EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this, currentRoom);
         }
 
         private void OnDestroy()
