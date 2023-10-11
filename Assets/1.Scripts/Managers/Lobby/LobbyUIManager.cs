@@ -2,6 +2,7 @@ using Com.Hide.Dialog;
 using Com.Hide.UI.Lobby.EnterRoomInfoCanvas;
 using Com.Hide.UI.Lobby.JoinRoomWindowCanvas;
 using Com.Hide.UI.Lobby.LobbyCanvas;
+using Com.Hide.UI.Lobby.SetInfoCanvas;
 using Com.Hide.Utils;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Com.Hide.Managers
     public class LobbyUIManager : SingletonMonoBehaviour<LobbyUIManager>
     {
         [SerializeField] private LobbyCanvas lobbyCanvas;
+        [SerializeField] private SetInfoCanvas setInfoCanvas;
 
         [SerializeField] private EnterRoomInfoCanvas enterRoomInfoCanvas;
         [SerializeField] private JoinRoomWindowCanvas joinRoomWindowCanvas;
@@ -21,6 +23,9 @@ namespace Com.Hide.Managers
         
         private void Initialize()
         {
+            if(SavedData.IsNewbie)
+                setInfoCanvas.Show();
+            
             lobbyCanvas.Initialize();
             joinRoomWindowCanvas.Initialize();
         }

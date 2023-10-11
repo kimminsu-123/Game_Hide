@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Com.Hide.Dialog;
 using Com.Hide.ScriptableObjects;
 using Com.Hide.Utils;
@@ -32,6 +30,8 @@ namespace Com.Hide.Managers
             PhotonNetwork.GameVersion = "1";
             PhotonNetwork.ConnectUsingSettings();
 
+            PhotonNetwork.NickName = SavedData.NickName;
+            
             EventManager.Instance.AddListener(EventType.SceneLoaded, OnSceneLoaded);
         }
 
@@ -86,11 +86,20 @@ namespace Com.Hide.Managers
                 CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
                 {
                     {RoomCustomPropertiesName.Password, password}
+                },
+                CustomRoomPropertiesForLobby = new []
+                {
+                    RoomCustomPropertiesName.Password
                 }
             };
 
-            if (!PhotonNetwork.CreateRoom(roomName, opt))
-                throw new Exception("방 생성 중 오류가 발생했습니다.");
+            PhotonNetwork.CreateRoom(roomName, opt);
+        }
+        
+        public override void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Logger.LogError($"CreateRoom:{returnCode}", message);
+            MessageDialog.Instance.Show($"방 생성 오류 : {returnCode}", message);
         }
 
         public void JoinRoom(string roomName, string password = "")
@@ -110,10 +119,14 @@ namespace Com.Hide.Managers
             if (!RoomManager.Instance.ValidatePassword(roomName, password))
                 throw new Exception("비밀번호가 다릅니다.");
 
-            if (!PhotonNetwork.JoinRoom(roomName))
-                throw new Exception("방에 접속 시, 오류가 발생하였습니다. 네트워크를 확인해주세요.");
-            
-            EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this);
+            if (PhotonNetwork.JoinRoom(roomName))
+                EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this);
+        }
+
+        public override void OnJoinRoomFailed(short returnCode, string message)
+        {
+            Logger.LogError($"JoinRoom:{returnCode}", message);
+            MessageDialog.Instance.Show($"방 입장 오류 : {returnCode}", message);
         }
 
         public override void OnJoinedLobby()

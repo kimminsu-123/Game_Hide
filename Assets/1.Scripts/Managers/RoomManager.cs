@@ -46,7 +46,6 @@ namespace Com.Hide.Managers
         ==============================================*/
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            CurrentRoom.IsOpen = false; 
             _roomInfos = roomList.ToDictionary(
                 keySelector: r => r.Name,
                 elementSelector: r => r

@@ -12,6 +12,7 @@ namespace Com.Hide.Managers
         
         private void Start()
         {
+            SavedData.Load();
             LoadSceneManager.Instance.LoadSceneAsync(lobbySceneData);
         }
 
