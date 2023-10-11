@@ -1,8 +1,10 @@
+using System;
 using Com.Hide.Dialog;
 using Com.Hide.Managers;
 using Com.Hide.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Logger = Com.Hide.Utils.Logger;
 
 namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
@@ -13,7 +15,7 @@ namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
         [SerializeField] private TMP_Text maxPlayerText;
         [SerializeField] private TMP_InputField passwordInputField;
 
-        [SerializeField] private SoundButton changePasswordTypeButton;
+        [SerializeField] private Button changePasswordTypeButton;
         [SerializeField] private Sprite showPasswordSprite;
         [SerializeField] private Sprite hidePasswordSprite;
         private bool _isShowPassword;
@@ -32,20 +34,20 @@ namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
         public void Submit()
         {
             var roomName = roomNameInputField.text.Trim();
-            if (string.IsNullOrEmpty(roomName))
-            {
-                MessageDialog.Instance.Show("오류", "방 이름은 공백일 수 없습니다.");
-                Logger.LogError("Room Name Empty", "room name is can not empty");
-                return;
-            }
-            
             var playerCount = Mathf.Clamp(
                 int.Parse(maxPlayerText.text), 
                 RoomProperty.MinimumPlayerCount, 
                 RoomProperty.MaximumPlayerCount);
             var password = passwordInputField.text.Trim();
-            
-            NetworkManager.Instance.CreateRoom(roomName, playerCount, password);
+
+            try
+            {
+                NetworkManager.Instance.CreateRoom(roomName, playerCount, password);
+            }
+            catch (Exception e)
+            {
+                MessageDialog.Instance.Show("오류", e.Message);
+            }
         }
 
         public void IncreasePlayerCount()

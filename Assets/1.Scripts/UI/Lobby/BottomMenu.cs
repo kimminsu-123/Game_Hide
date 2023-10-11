@@ -3,16 +3,26 @@ using Com.Hide.Managers;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using EventType = Com.Hide.Managers.EventType;
 
 namespace Com.Hide.UI.Lobby.LobbyCanvas
 {
     public class BottomMenu : MonoBehaviour
     {
-        [SerializeField] private SoundButton createRoomButton;
-        [SerializeField] private SoundButton findRoomButton;
-        [SerializeField] private SoundButton settingsButton;
-        [SerializeField] private SoundButton exitButton;
+        [SerializeField] private Button createRoomButton;
+        [SerializeField] private Button findRoomButton;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private Button exitButton;
+
+        private SoundButton _createRoomSoundButton;
+        private SoundButton _findRoomSoundButton;
+
+        private void Awake()
+        {
+            _createRoomSoundButton = createRoomButton as SoundButton;
+            _findRoomSoundButton = findRoomButton as SoundButton;
+        }
 
         private void Start()
         {
@@ -22,24 +32,24 @@ namespace Com.Hide.UI.Lobby.LobbyCanvas
 
         private void Initialize()
         {
-            createRoomButton.ChangeText("joining lobby..");
-            createRoomButton.interactable = false;
-            findRoomButton.ChangeText("joining lobby..");
-            findRoomButton.interactable = false;
+            _createRoomSoundButton.ChangeText("joining lobby..");
+            _createRoomSoundButton.interactable = false;
+            _findRoomSoundButton.ChangeText("joining lobby..");
+            _findRoomSoundButton.interactable = false;
         }
         
         private void OnJoinedLobby(EventType type, Component sender, object[] args)
         {
-            createRoomButton.ChangeText("Create Room");
-            createRoomButton.interactable = true;
-            findRoomButton.ChangeText("Find Room");
-            findRoomButton.interactable = true;
+            _createRoomSoundButton.ChangeText("Create Room");
+            _createRoomSoundButton.interactable = true;
+            _findRoomSoundButton.ChangeText("Find Room");
+            _findRoomSoundButton.interactable = true;
         }
 
         public void BindingButtons()
         {
             createRoomButton.onClick.AddListener(LobbyUIManager.Instance.ShowEnterRoomInfoDialog);
-            findRoomButton.onClick.AddListener(null);
+            findRoomButton.onClick.AddListener(LobbyUIManager.Instance.ShowJoinRoomWindowDialog);
             settingsButton.onClick.AddListener(null);
             exitButton.onClick.AddListener(GameManager.Instance.ExitGame);
         }

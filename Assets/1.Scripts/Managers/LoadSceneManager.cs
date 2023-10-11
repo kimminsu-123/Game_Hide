@@ -69,7 +69,7 @@ namespace Com.Hide.Managers
         private IEnumerator LoadSceneNetworking(SceneData sceneData)
         {
             if(NetworkManager.Instance.IsHost)
-                PhotonNetwork.LoadLevel(sceneData.BuildIndex);
+                PhotonNetwork.LoadLevel(sceneData.BuildIndex, sceneData.Mode);
             
             while (PhotonNetwork.LevelLoadingProgress < 1f)
             {

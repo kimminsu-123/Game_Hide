@@ -3,11 +3,8 @@ using UnityEngine;
 
 namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
 {
-    public class EnterRoomInfoCanvas : MonoBehaviour
+    public class EnterRoomInfoCanvas : WindowCanvas
     {
-        [SerializeField] private GameObject dimmedPanel;
-        [SerializeField] private GameObject windowPanel;
-
         [SerializeField] private EnterRoomInfoContents contents;
 
         private void Start()
@@ -15,18 +12,9 @@ namespace Com.Hide.UI.Lobby.EnterRoomInfoCanvas
             Hide();
         }
 
-        public void Show()
+        protected override void OnShow()
         {
             contents.Initialize();
-
-            dimmedPanel.SetActive(true);   
-            windowPanel.SetActive(true);
-        }
-
-        public void Hide()
-        {
-            dimmedPanel.SetActive(false);   
-            windowPanel.SetActive(false);   
         }
     }
 }

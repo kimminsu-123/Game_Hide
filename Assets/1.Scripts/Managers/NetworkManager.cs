@@ -15,9 +15,8 @@ namespace Com.Hide.Managers
     public class NetworkManager : SingletonMonoBehaviourPunCallbacks<NetworkManager>
     {
         public bool IsHost => PhotonNetwork.IsMasterClient;
-        
+
         private bool _isConnect = false;
-        private RoomInfo[] _roomInfos = Array.Empty<RoomInfo>();
 
         private void Start()
         {
@@ -72,26 +71,49 @@ namespace Com.Hide.Managers
 
         public void CreateRoom(string roomName, int maxPlayer = 8, string password = "")
         {
-            if (PhotonNetwork.InRoom)
-                return;
+            if (string.IsNullOrEmpty(roomName))
+                throw new ArgumentException($"방 이름은 공백이 될 수 없습니다.");
 
+            if (PhotonNetwork.InRoom)
+                throw new Exception($"이미 다른 방에 접속해 있습니다.");
+
+            if (RoomManager.Instance.ExistRoom(roomName))
+                throw new ArgumentNullException(roomName, $"중복된 방제목입니다. [{roomName}]");
+            
             var opt = new RoomOptions
             {
                 MaxPlayers = maxPlayer,
                 CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
                 {
-                    { RoomCustomPropertiesName.Password, password }
+                    {RoomCustomPropertiesName.Password, password}
                 }
             };
-            
-            var r = _roomInfos?.FirstOrDefault(room => room.Name.Equals(roomName));
-            if (r != null)
-            {
-                MessageDialog.Instance.Show("오류", $"중복된 방제목입니다. [{roomName}]");
-                Logger.LogError("Duplicate Room Name", "this room already been created. use other room name");
-            }
 
-            PhotonNetwork.CreateRoom(roomName, opt);
+            if (!PhotonNetwork.CreateRoom(roomName, opt))
+                throw new Exception("방 생성 중 오류가 발생했습니다.");
+        }
+
+        public void JoinRoom(string roomName, string password = "")
+        {
+            if (string.IsNullOrEmpty(roomName))
+                throw new ArgumentException($"방 제목은 공백이 될 수 없습니다.");
+
+            if (PhotonNetwork.InRoom)
+                throw new Exception($"이미 다른 방에 접속해 있습니다.");
+
+            if (!RoomManager.Instance.ExistRoom(roomName))
+                throw new ArgumentNullException(roomName, $"존재하지 않는 방입니다. [{roomName}]");
+
+            if (RoomManager.Instance.IsRoomFull(roomName))
+                throw new ArgumentOutOfRangeException(roomName, $"이미 꽉 찬 방입니다.");
+
+            if (!RoomManager.Instance.ValidatePassword(roomName, password))
+                throw new Exception("비밀번호가 다릅니다.");
+
+            if (!PhotonNetwork.JoinRoom(roomName))
+                throw new Exception("방에 접속 시, 오류가 발생하였습니다. 네트워크를 확인해주세요.");
+            
+            EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this);
         }
 
         public override void OnJoinedLobby()
@@ -113,17 +135,6 @@ namespace Com.Hide.Managers
             Logger.Log("Create Room", $"Created Room [Name: {currentRoom.Name}], [Password: {currentRoom.CustomProperties[RoomCustomPropertiesName.Password]}]");
 
             EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this, PhotonNetwork.CurrentRoom);
-        }
-
-        public override void OnJoinedRoom()
-        {
-            Logger.Log("Joined Room", "Success Join Room");
-        }
-
-        public override void OnRoomListUpdate(List<RoomInfo> roomList)
-        {
-            _roomInfos = new RoomInfo[roomList.Count];
-            roomList?.CopyTo(_roomInfos);
         }
 
         private void OnDestroy()

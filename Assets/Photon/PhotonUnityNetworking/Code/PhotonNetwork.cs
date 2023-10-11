@@ -3053,7 +3053,7 @@ namespace Photon.Pun
         /// <param name='levelNumber'>
         /// Build-index number of the level to load. When using level numbers, make sure they are identical on all clients.
         /// </param>
-        public static void LoadLevel(int levelNumber)
+        public static void LoadLevel(int levelNumber, LoadSceneMode mode = LoadSceneMode.Additive)
         {
             if (PhotonHandler.AppQuits)
             {
@@ -3067,7 +3067,7 @@ namespace Photon.Pun
 
             PhotonNetwork.IsMessageQueueRunning = false;
             loadingLevelAndPausedNetwork = true;
-            _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelNumber,LoadSceneMode.Additive);
+            _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelNumber, mode);
         }
 
         /// <summary>This method wraps loading a level asynchronously and pausing network messages during the process.</summary>
@@ -3095,7 +3095,7 @@ namespace Photon.Pun
         /// <param name='levelName'>
         /// Name of the level to load. Make sure it's available to all clients in the same room.
         /// </param>
-        public static void LoadLevel(string levelName)
+        public static void LoadLevel(string levelName, LoadSceneMode mode = LoadSceneMode.Single)
         {
             if (PhotonHandler.AppQuits)
             {
@@ -3109,7 +3109,7 @@ namespace Photon.Pun
 
             PhotonNetwork.IsMessageQueueRunning = false;
             loadingLevelAndPausedNetwork = true;
-            _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
+            _AsyncLevelLoadingOperation = SceneManager.LoadSceneAsync(levelName, mode);
         }
 
         /// <summary>
