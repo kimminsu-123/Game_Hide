@@ -32,7 +32,7 @@ namespace Com.Hide.UI
             base.OnEnable();
 
             if (audioSource == null)
-                audioSource = FindObjectOfType<AudioSource>(true);
+                audioSource = GameObject.FindGameObjectWithTag("SFXAudioSource").GetComponent<AudioSource>();
         }
 
         public void ChangeText(string msg)

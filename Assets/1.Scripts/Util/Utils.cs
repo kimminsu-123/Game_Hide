@@ -1,3 +1,5 @@
+using System;
+using Com.Hide.Managers;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,33 +16,24 @@ namespace Com.Hide.Utils
         public static readonly int MaximumPlayerCount = 8;
     }
 
-    public struct PlayerPrefsName
+    public struct PlayerPrefsSaveName
     {
         public static readonly string NickName = "NickName";
+        public static readonly string MasterVolume = "MasterVolume";
+        public static readonly string BGMVolume = "BGMVolume";
+        public static readonly string SfxVolume = "SFXVolume";
+        public static readonly string WindowMode = "WindowMode";
+        public static readonly string Resolution = "Resolution";
     }
 
-    public struct SavedData
+    public struct AudioMixerGroupName
     {
-        public static string NickName { get; private set; }
-
-        public static bool IsNewbie { get; private set; }
-        
-        public static void Load()
-        {
-            NickName = PlayerPrefs.GetString(PlayerPrefsName.NickName, "");
-
-            IsNewbie = string.IsNullOrEmpty(NickName);
-        }
-
-        public static void Save(string nickName)
-        {
-            PlayerPrefs.SetString(PlayerPrefsName.NickName, nickName);
-            
-            Load();
-        }
+        public static readonly string Master = "Master";
+        public static readonly string BGM = "BGM";
+        public static readonly string SFX = "SFX";
     }
-
-    public struct Message
+    
+    public class Message
     {
         public string Title { get; private set; }
         public string Msg { get; private set; }

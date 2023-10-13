@@ -30,7 +30,8 @@ namespace Com.Hide.Managers
             PhotonNetwork.GameVersion = "1";
             PhotonNetwork.ConnectUsingSettings();
 
-            PhotonNetwork.NickName = SavedData.NickName;
+            var nameData = SaveDataManager.Instance.Find(PlayerPrefsSaveName.NickName);
+            PhotonNetwork.NickName = nameData.SName.NamePathName;
             
             EventManager.Instance.AddListener(EventType.SceneLoaded, OnSceneLoaded);
         }

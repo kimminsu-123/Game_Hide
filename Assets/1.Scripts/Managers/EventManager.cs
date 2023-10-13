@@ -11,7 +11,9 @@ namespace Com.Hide.Managers
         SceneUnloaded,
 
         OnJoinedLobby,
-        OnJoinedRoom
+        OnJoinedRoom,
+        
+        OnDataLoaded
     }
     public class EventManager : SingletonMonoBehaviour<EventManager>
     {

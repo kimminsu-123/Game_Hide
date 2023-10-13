@@ -3,8 +3,10 @@ using Com.Hide.UI.Lobby.EnterRoomInfoCanvas;
 using Com.Hide.UI.Lobby.JoinRoomWindowCanvas;
 using Com.Hide.UI.Lobby.LobbyCanvas;
 using Com.Hide.UI.Lobby.SetInfoCanvas;
+using Com.Hide.UI.Main;
 using Com.Hide.Utils;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Com.Hide.Managers
 {
@@ -15,7 +17,7 @@ namespace Com.Hide.Managers
 
         [SerializeField] private EnterRoomInfoCanvas enterRoomInfoCanvas;
         [SerializeField] private JoinRoomWindowCanvas joinRoomWindowCanvas;
-        
+
         private void Start()
         {
             Initialize();
@@ -23,7 +25,8 @@ namespace Com.Hide.Managers
         
         private void Initialize()
         {
-            if(SavedData.IsNewbie)
+            var nameData = SaveDataManager.Instance.Find(PlayerPrefsSaveName.NickName);
+            if(string.IsNullOrEmpty(nameData.SValue.Value))
                 setInfoCanvas.Show();
             
             lobbyCanvas.Initialize();
