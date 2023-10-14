@@ -32,13 +32,7 @@ namespace Com.Hide.Player.Animation
 
         private void ProcessMoveAnimation()
         {
-            // walk
-            var v = !playerInputHandler.IsMove ? 0f : 1f;
-            
-            // run
-            if (playerInputHandler.IsSprint && playerInputHandler.IsMove)
-                v = 2;
-
+            var v = rigid.velocity.magnitude;
             Animator.SetFloat(_hashMove, v);
         }
 

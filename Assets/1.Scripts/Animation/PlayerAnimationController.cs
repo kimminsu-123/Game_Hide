@@ -6,12 +6,12 @@ namespace Com.Hide.Player.Animation
 {
     public class PlayerAnimationController : MonoBehaviour
     {
-        [SerializeField]
-        protected PlayerStatusHandler playerStatusHandler;
-        protected Animator Animator => _animator;
+        [SerializeField] protected PlayerStatusHandler playerStatusHandler;
+        [SerializeField] protected Rigidbody rigid;
 
+        protected Animator Animator => _animator;
         private Animator _animator;
-        
+
         private void Awake()
         {
             OnAwake();

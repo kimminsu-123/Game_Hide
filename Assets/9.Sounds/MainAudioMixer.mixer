@@ -32,7 +32,7 @@ AudioMixerGroupController:
   m_UserColorIndex: 0
   m_Mute: 1
   m_Solo: 1
-  m_BypassEffects: 0
+  m_BypassEffects: 1
 --- !u!241 &24100000
 AudioMixerController:
   m_ObjectHideFlags: 0

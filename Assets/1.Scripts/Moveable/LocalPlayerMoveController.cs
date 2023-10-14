@@ -2,6 +2,7 @@ using Cinemachine;
 using Com.Hide.Input;
 using Com.Hide.Player.Status;
 using UnityEngine;
+using Logger = Com.Hide.Utils.Logger;
 
 namespace Com.Hide.Player.Movable
 {
