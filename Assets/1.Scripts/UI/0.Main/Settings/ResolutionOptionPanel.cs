@@ -12,15 +12,14 @@ namespace Com.Hide.UI.Main.Settings
         public OptionPanel windowOptionPanel;
         
         [SerializeField] private TMP_Dropdown dropdown;
-        private Resolution[] Resolutions => Screen.resolutions;
 
         public override void Initialize()
         {
             dropdown.ClearOptions();
-            dropdown.AddOptions(Resolutions.Select(r => r.ToString()).ToList());
+            dropdown.AddOptions(ScreenManager.Instance.ResolutionsStrings);
             
             var sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.Resolution).SValue;
-            dropdown.value = string.IsNullOrEmpty(sValue.Value) ? Resolutions.Length - 1 : int.Parse(sValue.Value);
+            dropdown.value = string.IsNullOrEmpty(sValue.Value) ? ScreenManager.Instance.ResolutionCount - 1 : int.Parse(sValue.Value);
             windowOptionPanel.Initialize();
         }
 
@@ -33,7 +32,7 @@ namespace Com.Hide.UI.Main.Settings
             
             var sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.WindowMode).SValue;
             var isWindow = !string.IsNullOrEmpty(sValue.Value) && bool.Parse(sValue.Value);
-            Screen.SetResolution(Resolutions[v].width, Resolutions[v].height, isWindow);
+            ScreenManager.Instance.SetResolution(v, !isWindow);
         }
     }
 }

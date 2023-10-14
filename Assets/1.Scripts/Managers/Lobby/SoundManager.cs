@@ -21,11 +21,11 @@ namespace Com.Hide.Managers
             SetVolume(AudioMixerGroupName.Master, v);
             
             sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.BGMVolume).SValue;
-            v = string.IsNullOrEmpty(sValue.Value) ? 1f : float.Parse(sValue.Value);
+            v = string.IsNullOrEmpty(sValue.Value) ? 0.5f : float.Parse(sValue.Value);
             SetVolume(AudioMixerGroupName.BGM, v);
             
             sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.SfxVolume).SValue;
-            v = string.IsNullOrEmpty(sValue.Value) ? 1f : float.Parse(sValue.Value);
+            v = string.IsNullOrEmpty(sValue.Value) ? 0.5f : float.Parse(sValue.Value);
             SetVolume(AudioMixerGroupName.SFX, v);
         }
 
