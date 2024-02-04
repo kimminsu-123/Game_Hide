@@ -14,12 +14,15 @@ namespace Com.Hide.UI.Lobby.JoinRoomWindowCanvas
         [SerializeField] private TMP_InputField passwordInputField;
         [SerializeField] private Button joinButton;
 
+        private void Start()
+        {
+            joinButton.onClick.AddListener(ProcessJoin);
+        }
+
         public void Initialize()
         {
             roomNameInputField.text = string.Empty;
             passwordInputField.text = string.Empty;
-            
-            joinButton.onClick.AddListener(ProcessJoin);
         }
 
         protected override void OnHide()
