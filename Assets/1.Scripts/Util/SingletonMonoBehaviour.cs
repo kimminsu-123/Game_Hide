@@ -12,11 +12,6 @@ namespace Com.Hide.Utils
 
         private void Awake()
         {
-            OnAwake();
-        }
-
-        protected virtual void OnAwake()
-        {
             if(_instance != null)
                 Destroy(gameObject);
             
@@ -24,6 +19,17 @@ namespace Com.Hide.Utils
             
             if(dontDestroyGameObject)
                 DontDestroyOnLoad(gameObject);
+            
+            OnAwake();
+        }
+
+        protected virtual void OnAwake()
+        {
+        }
+        
+        protected virtual void OnDestroy()
+        {
+            _instance = default;
         }
     }
 }

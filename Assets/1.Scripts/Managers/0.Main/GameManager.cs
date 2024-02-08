@@ -3,6 +3,7 @@ using Com.Hide.ScriptableObjects;
 using Com.Hide.Utils;
 using UnityEditor;
 using UnityEngine;
+using Logger = Com.Hide.Utils.Logger;
 
 namespace Com.Hide.Managers
 {

@@ -47,6 +47,7 @@ namespace Com.Hide.Managers
                 case SceneType.None:
                     break;
                 case SceneType.Lobby:
+                    _isConnect = false;
                     StartCoroutine(JoinLobbyCoroutine());
                     break;
                 case SceneType.Room:
@@ -60,9 +61,12 @@ namespace Com.Hide.Managers
 
         private IEnumerator JoinLobbyCoroutine()
         {
+            if (PhotonNetwork.InLobby)
+                yield break;
+            
             while (!_isConnect)
                 yield return null;
-
+            
             if (!PhotonNetwork.JoinLobby())
             {
                 MessageDialog.Instance.Show("오류", "로비에 접속 실패하였습니다.");
@@ -78,11 +82,13 @@ namespace Com.Hide.Managers
             if (PhotonNetwork.InRoom)
                 throw new Exception($"이미 다른 방에 접속해 있습니다.");
 
-            if (RoomManager.Instance.ExistRoom(roomName))
+            if (LobbyManager.Instance.ExistRoom(roomName))
                 throw new ArgumentNullException(roomName, $"중복된 방제목입니다. [{roomName}]");
             
             var opt = new RoomOptions
             {
+                CleanupCacheOnLeave = true,
+                EmptyRoomTtl = 0, 
                 MaxPlayers = maxPlayer,
                 CustomRoomProperties = new ExitGames.Client.Photon.Hashtable()
                 {
@@ -111,13 +117,13 @@ namespace Com.Hide.Managers
             if (PhotonNetwork.InRoom)
                 throw new Exception($"이미 다른 방에 접속해 있습니다.");
 
-            if (!RoomManager.Instance.ExistRoom(roomName))
+            if (!LobbyManager.Instance.ExistRoom(roomName))
                 throw new ArgumentNullException(roomName, $"존재하지 않는 방입니다. [{roomName}]");
 
-            if (RoomManager.Instance.IsRoomFull(roomName))
+            if (LobbyManager.Instance.IsRoomFull(roomName))
                 throw new ArgumentOutOfRangeException(roomName, $"이미 꽉 찬 방입니다.");
 
-            if (!RoomManager.Instance.ValidatePassword(roomName, password))
+            if (!LobbyManager.Instance.ValidatePassword(roomName, password))
                 throw new Exception("비밀번호가 다릅니다.");
 
             if (PhotonNetwork.JoinRoom(roomName))
@@ -132,7 +138,7 @@ namespace Com.Hide.Managers
 
         public override void OnJoinedLobby()
         {
-            Logger.Log("Join Room", "Success Join Lobby");
+            Logger.Log("Join Room", "Success Join Lobby", Color.green);
 
             EventManager.Instance.PostNotification(EventType.OnJoinedLobby, this);
         }
@@ -140,20 +146,32 @@ namespace Com.Hide.Managers
         public override void OnConnectedToMaster()
         {
             _isConnect = true;
+            
+            Logger.Log("Connected Photon Server", "Connected Photon Server", Color.green);
+        }
+        
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            _isConnect = false; 
+            
+            Logger.Log("Disconnect Photon Server", cause.ToString(), Color.magenta);
         }
 
         public override void OnCreatedRoom()
         {
-            var currentRoom = RoomManager.Instance.CurrentRoom;
+            var currentRoom = LobbyManager.Instance.CurrentRoom;
 
-            Logger.Log("Create Room", $"Created Room [Name: {currentRoom.Name}], [Password: {currentRoom.CustomProperties[RoomCustomPropertiesName.Password]}]");
+            Logger.Log("Create Room", $"Created Room [Name: {currentRoom.Name}], [Password: {currentRoom.CustomProperties[RoomCustomPropertiesName.Password]}]", Color.green);
 
             EventManager.Instance.PostNotification(EventType.OnJoinedRoom, this, currentRoom);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
-            EventManager.Instance.RemoveListener(EventType.SceneLoaded, OnSceneLoaded);
+            base.OnDestroy();
+            
+            if(EventManager.Instance != null)
+                EventManager.Instance.RemoveListener(EventType.SceneLoaded, OnSceneLoaded);
         }
     }
 }

@@ -17,8 +17,6 @@ namespace Com.Hide.Managers
 
         protected override void OnAwake()
         {
-            base.OnAwake();
-            
             _resolutions = Screen.resolutions;
             
             ResolutionsStrings = Resolutions.Select(r => r.ToString()).ToList();

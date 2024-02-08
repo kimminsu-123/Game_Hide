@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Com.Hide.Managers;
@@ -9,7 +10,7 @@ using EventType = Com.Hide.Managers.EventType;
 public class JoinRoomHandler : MonoBehaviour
 {
     [SerializeField] private SceneData roomSceneData;
-    
+
     private void Start()
     {
         EventManager.Instance.AddListener(EventType.OnJoinedRoom, OnJoinedRoom);
@@ -19,5 +20,11 @@ public class JoinRoomHandler : MonoBehaviour
     {
         LoadSceneManager.Instance.UnloadSceneAsync();
         LoadSceneManager.Instance.LoadSceneAsync(roomSceneData);
+    }
+
+    private void OnDestroy()
+    {
+        if (EventManager.Instance != null)
+            EventManager.Instance.RemoveListener(EventType.OnJoinedRoom, OnJoinedRoom);
     }
 }

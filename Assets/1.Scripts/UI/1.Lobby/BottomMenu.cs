@@ -27,7 +27,6 @@ namespace Com.Hide.UI.Lobby.LobbyCanvas
         private void Start()
         {
             Initialize();
-            EventManager.Instance.AddListener(EventType.OnJoinedLobby, OnJoinedLobby);
         }
 
         private void Initialize()
@@ -36,6 +35,8 @@ namespace Com.Hide.UI.Lobby.LobbyCanvas
             _createRoomSoundButton.interactable = false;
             _findRoomSoundButton.ChangeText("joining lobby..");
             _findRoomSoundButton.interactable = false;
+            
+            EventManager.Instance.AddListener(EventType.OnJoinedLobby, OnJoinedLobby);
         }
         
         private void OnJoinedLobby(EventType type, Component sender, object[] args)
@@ -56,7 +57,8 @@ namespace Com.Hide.UI.Lobby.LobbyCanvas
 
         private void OnDestroy()
         {
-            EventManager.Instance.RemoveListener(EventType.OnJoinedLobby, OnJoinedLobby);
+            if(EventManager.Instance != null)
+                EventManager.Instance.RemoveListener(EventType.OnJoinedLobby, OnJoinedLobby);
         }
     }
 }

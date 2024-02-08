@@ -15,15 +15,15 @@ namespace Com.Hide.Managers
         }
 
         private void OnDataLoaded(EventType type, Component sender, object[] args)
-        {            
+        {
             var sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.MasterVolume).SValue;
             var v = string.IsNullOrEmpty(sValue.Value) ? 1f : float.Parse(sValue.Value);
             SetVolume(AudioMixerGroupName.Master, v);
-            
+
             sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.BGMVolume).SValue;
             v = string.IsNullOrEmpty(sValue.Value) ? 0.5f : float.Parse(sValue.Value);
             SetVolume(AudioMixerGroupName.BGM, v);
-            
+
             sValue = SaveDataManager.Instance.Find(PlayerPrefsSaveName.SfxVolume).SValue;
             v = string.IsNullOrEmpty(sValue.Value) ? 0.5f : float.Parse(sValue.Value);
             SetVolume(AudioMixerGroupName.SFX, v);
@@ -34,9 +34,12 @@ namespace Com.Hide.Managers
             audioMixer.SetFloat(n, (v - 0.8f) * 100f);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
-            EventManager.Instance.RemoveListener(EventType.OnDataLoaded, OnDataLoaded);
+            base.OnDestroy();
+
+            if (EventManager.Instance != null)
+                EventManager.Instance.RemoveListener(EventType.OnDataLoaded, OnDataLoaded);
         }
     }
 }

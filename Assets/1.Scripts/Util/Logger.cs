@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Com.Hide.Utils
@@ -6,9 +7,11 @@ namespace Com.Hide.Utils
     public static class Logger
     {
         [Conditional("UNITY_EDITOR")]
-        public static void Log(string title, string msg)
+        public static void Log(string title, string msg, Color? color = null)
         {
-            Debug.Log($"[{title}] : {msg}");
+            color ??= Color.white;
+            
+            Debug.Log($"<color=#{ColorUtility.ToHtmlStringRGBA(color.Value)}>[{title}] : {msg}</color>");
         }
         
         [Conditional("UNITY_EDITOR")]

@@ -189,4 +189,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStatusHandler: {fileID: 0}
+  rigid: {fileID: 0}
   playerInputHandler: {fileID: 0}
